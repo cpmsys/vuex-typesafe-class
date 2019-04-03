@@ -1,0 +1,45 @@
+{
+  "name": "vuex-extra",
+  "version": "0.0.0",
+  "description": "Typescript helpers for using classes as vuex modules",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "jest"
+  },
+  "homepage": "https://github.com/ktsn/vuex-class",
+  "bugs": "https://github.com/ktsn/vuex-class/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://git.cpmsys.de/npm/vuex-extra.git"
+  },
+  "keywords": [
+    "vue",
+    "vuex",
+    "typescript",
+    "nuxt",
+    "class"
+  ],
+  "author": "Markus Werner",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^24.0.11",
+    "@types/vue": "^2.0.0",
+    "@vue/cli-plugin-typescript": "^3.5.3",
+    "@vue/cli-service": "^3.5.3",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-core": "^6.26.3",
+    "jest": "^24.7.0",
+    "jest-serializer-vue": "^2.0.2",
+    "ts-jest": "^24.0.1",
+    "typescript": "^3.4.1",
+    "vue": "^2.6.10",
+    "vue-jest": "^3.0.4",
+    "vue-template-compiler": "^2.6.10",
+    "vuex": "^3.1.0"
+  },
+  "peerDependencies": {
+    "vue": "^2.6.10",
+    "vuex": "^3.1.0"
+  }
+}
