@@ -2,6 +2,10 @@ import "jest";
 import Vue from "vue";
 import Vuex from "vuex";
 
+interface IAmbient {
+  $test: { test(): any };
+}
+
 import {
   createModule,
   MutationKeys,
@@ -201,5 +205,61 @@ describe("Builder", () => {
     await expect(
       store.dispatch("myAction", { text: "Hello" })
     ).resolves.toEqual("hello WORLD");
+  });
+
+  it("Injected helpers", async () => {
+    class Helpers {
+      get $hurz(this: any): { test: Function } {
+        return this.$test;
+      }
+    }
+
+    const rootModule = createModule(
+      class extends Helpers {
+        async send({}) {
+          return await this.send2({});
+        }
+
+        async send2(this: any, {}) {
+          return this.$hurz.test();
+        }
+      }
+    );
+
+    const store: any = new Vuex.Store(rootModule);
+    store["$test"] = {
+      test: function() {
+        return 123;
+      }
+    };
+
+    await expect(store.dispatch("send", {})).resolves.toEqual(123);
+  });
+
+  class BaseStore {
+    protected $test!: { test(): Function };
+  }
+
+  it("Injected helpers", async () => {
+    const rootModule = createModule(
+      class extends BaseStore {
+        async send({}) {
+          return await this.send2({});
+        }
+
+        async send2({}) {
+          return this.$test.test();
+        }
+      }
+    );
+
+    const store: any = new Vuex.Store(rootModule);
+    store["$test"] = {
+      test: function() {
+        return 123;
+      }
+    };
+
+    await expect(store.dispatch("send", {})).resolves.toEqual(123);
   });
 });

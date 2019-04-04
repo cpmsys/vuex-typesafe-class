@@ -114,11 +114,15 @@ export function createModule<T extends Constructor>(
   const isAction = (p: PropertyDescriptor, k: string) =>
     k !== "constructor" && isFunction(p) && !isGenerator(p);
 
+  function getAllPropertyDescriptors(instance: any): PropertyDescriptorMap {
+    if (instance == Object.prototype) return {};
+    const proto = Object.getPrototypeOf(instance);
+    const descriptors = Object.getOwnPropertyDescriptors(proto);
+    return { ...getAllPropertyDescriptors(proto), ...descriptors };
+  }
+
   const instance = new cls();
-  const props: Record<
-    keyof InstanceType<T>,
-    PropertyDescriptor
-  > = Object.getOwnPropertyDescriptors(Object.getPrototypeOf(instance));
+  const props: PropertyDescriptorMap = getAllPropertyDescriptors(instance);
 
   const filter = (
     f: (prop: PropertyDescriptor, key: string) => boolean,
@@ -189,84 +193,92 @@ export function createModule<T extends Constructor>(
   //Actions:
   const actions: ActionMap<InstanceType<T>> = filter(
     isAction,
-    (p, k) => (context: IStoreLike, args: vuex.DispatchOptions) => {
-      const { state, commit, dispatch, getters } = context;
-      const action = p.value;
+    (p, k) =>
+      function(
+        this: vuex.Store<any>,
+        context: IStoreLike,
+        args: vuex.DispatchOptions
+      ) {
+        const ctx = this;
+        const { state, commit, dispatch, getters } = context;
+        const action = p.value;
 
-      //Create Getters:
-      const _getters: Record<
-        GetterKeys<InstanceType<T>>,
-        PropertyDescriptor
-      > = filter(isGetter, (p, key) => ({
-        get() {
-          return getters[key];
-        }
-      }));
-
-      const _state: Record<
-        MutationKeys<InstanceType<T>>,
-        PropertyDescriptor
-      > = Object.keys(state).reduce(
-        (out, key) => {
-          out[key] = {
-            get() {
-              return state[key];
-            }
-          };
-          return out;
-        },
-        {} as any
-      );
-
-      //Create Mutations:
-      const _mutations: Record<
-        MutationKeys<InstanceType<T>>,
-        PropertyDescriptor
-      > = filter(isSetter, (p, key) => ({
-        get() {
-          return (value: any) => {
-            commit(key, value);
-          };
-        },
-        set(value: any) {
-          commit(key, value);
-        }
-      }));
-      //Create actions
-
-      const _actions: Record<
-        ActionKeys<InstanceType<T>>,
-        PropertyDescriptor
-      > = filter(isAction, (p, k) => ({
-        get() {
-          return (value: any, args: vuex.DispatchOptions) => {
-            return dispatch(k, value, { ...args, root: true });
-          };
-        }
-      }));
-
-      const _helpers: Record<
-        keyof InstanceType<T>,
-        PropertyDescriptor
-      > = filter(
-        (prop, key) => EXCLUDE_PATTERN.test(key),
-        (p, k) => ({
+        //Create Getters:
+        const _getters: Record<
+          GetterKeys<InstanceType<T>>,
+          PropertyDescriptor
+        > = filter(isGetter, (p, key) => ({
           get() {
-            return (p.get || p.value).call(context);
+            return getters[key];
           }
-        }),
-        null
-      );
+        }));
 
-      const caller = {};
+        const _state: Record<
+          MutationKeys<InstanceType<T>>,
+          PropertyDescriptor
+        > = Object.keys(state).reduce(
+          (out, key) => {
+            out[key] = {
+              get() {
+                return state[key];
+              }
+            };
+            return out;
+          },
+          {} as any
+        );
 
-      Object.defineProperties(caller, _helpers);
-      Object.defineProperties(caller, _state);
-      Object.defineProperties(caller, _getters);
-      Object.defineProperties(caller, _mutations);
-      Object.defineProperties(caller, _actions);
-      return action.call(caller, args);
-    }
+        //Create Mutations:
+        const _mutations: Record<
+          MutationKeys<InstanceType<T>>,
+          PropertyDescriptor
+        > = filter(isSetter, (p, key) => ({
+          get() {
+            return (value: any) => {
+              commit(key, value);
+            };
+          },
+          set(value: any) {
+            commit(key, value);
+          }
+        }));
+        //Create actions
+
+        const _actions: Record<
+          ActionKeys<InstanceType<T>>,
+          PropertyDescriptor
+        > = filter(isAction, (p, k) => ({
+          get() {
+            return (value: any, args: vuex.DispatchOptions) => {
+              return dispatch(k, value, { ...args, root: true });
+            };
+          }
+        }));
+
+        const _helpers: Record<
+          keyof InstanceType<T>,
+          PropertyDescriptor
+        > = filter(
+          (prop, key) => EXCLUDE_PATTERN.test(key),
+          (p, k) => ({
+            get() {
+              return (p.get || p.value).call(ctx);
+            }
+          }),
+          null
+        );
+
+        const caller = {};
+
+        Object.defineProperties(caller, Object.getOwnPropertyDescriptors(ctx));
+        Object.defineProperties(caller, _helpers);
+        Object.defineProperties(caller, _state);
+        Object.defineProperties(caller, _getters);
+        Object.defineProperties(caller, _mutations);
+        Object.defineProperties(caller, _actions);
+
+        return action.call(caller, args);
+      }
   );
 
   const modules = ((options && options.modules) || []).reduce(

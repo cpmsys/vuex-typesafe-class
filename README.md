@@ -210,3 +210,60 @@ You can use `useStore` outside of Vuex module classes.
 const $nested = useStore(salutationModule, this);
 assert($nested.salutation, "Mrs.");
 ```
+
+# Inheritance
+
+Modules created with `createModule` can make use of inheritance:
+
+```typescript
+class BaseStore {
+  async submit({ username, password }) {
+    return await this.$axios.post("/login", { username, password });
+  }
+}
+
+const rootModule = createModule(
+  class extends BaseStore {
+    async submit({ username, password }) {
+      const response = await super.submit({ username, password });
+      if (response.status == 401) {
+        throw new Error("Authorization failed");
+      }
+      return response.data;
+    }
+  }
+);
+```
+
+# How can I use injected variables (like \$axios) that are available in store context?
+
+When using [Nuxt.js](https://nuxtjs.org) in conjunction with [Axios Module](https://axios.nuxtjs.org) \$axios is [injected](https://nuxtjs.org/guide/plugins#combined-inject) to store context.
+You can access the context via `this` as you would do in standard Vuex modules.
+
+```typescript
+const rootModule = createModule(
+  class {
+    protected $axios!: Axios;
+
+    async submit({ username, password }) {
+      return await this.$axios.post("/login", { username, password });
+    }
+  }
+);
+```
+
+To use injected variables easily you can make use of inheritance:
+
+```typescript
+class BaseStore {
+  protected $axios!: Axios;
+}
+
+const rootModule = createModule(
+  class extends BaseStore {
+    async submit({ username, password }) {
+      return await this.$axios.post("/login", { username, password });
+    }
+  }
+);
+```

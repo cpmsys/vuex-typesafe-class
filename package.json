@@ -1,11 +1,12 @@
 {
   "name": "vuex-extra",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Typescript helpers for using classes as vuex modules",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "test": "npm run test:unit",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "build": "tsc -p ./tsconfig.build.json"
   },
   "homepage": "https://github.com/ktsn/vuex-class",
   "bugs": "https://github.com/ktsn/vuex-class/issues",
