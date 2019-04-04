@@ -8,7 +8,9 @@ import {
   Mutation,
   StateMap,
   StateFactory,
-  useStore
+  useStore,
+  getNamespace,
+  getNamespacePath
 } from "../src/index";
 
 Vue.config.productionTip = false;
@@ -16,6 +18,14 @@ Vue.config.devtools = false;
 
 describe("Helpers", () => {
   Vue.use(Vuex);
+
+  describe("getNamespace", () => {
+    it("Handles module paths", async () => {
+      const m = createModule(class {}, "./store/elements/active/index.ts");
+
+      expect(getNamespace(m)).toEqual(["elements", "active"]);
+    });
+  });
 
   describe("useStore", () => {
     it("State", () => {

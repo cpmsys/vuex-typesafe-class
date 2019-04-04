@@ -74,7 +74,7 @@ export function getNamespacePath<T extends Constructor>(
 ): string {
   if ("default" in m) m = m["default"];
   const namespace = String(m.$namespace || "").replace(
-    /^.*?\/store\/|\.(ts|js)$|index$/g,
+    /^.*?\/store\/|\.(ts|js)$|index\.(ts|js)$/g,
     ""
   );
   return namespace;
