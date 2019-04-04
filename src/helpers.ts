@@ -1,5 +1,4 @@
 import * as vuex from "vuex";
-import Vue from "vue";
 
 import {
   Constructor,
@@ -82,12 +81,7 @@ export function getNamespacePath<T extends Constructor>(
 
 export function useStore<T extends Constructor, C = InstanceType<T>>(
   m: IVuexModule<T>,
-  c?: IStoreContext
+  c: IStoreContext
 ): InstanceType<T> & { [P in MutationKeys<C>]: (v: C[P]) => void } {
   return m.getInstance(c);
-}
-
-export function getStore(): vuex.Store<any> {
-  console.warn("Using global store");
-  return Vue.prototype.$nuxt.$store;
 }

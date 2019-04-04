@@ -1,6 +1,6 @@
 import * as vuex from "vuex";
 
-import { getNamespace, getStore } from "./helpers";
+import { getNamespace } from "./helpers";
 
 import {
   Constructor,
@@ -55,7 +55,7 @@ function createInstance<T extends Constructor>(
       ? "$store" in context
         ? context.$store
         : context
-      : getStore();
+      : null;
 
     const namespacePath = (...path: string[]) =>
       namespace.concat(path).join(NAMESPACE_SEPARATOR);
@@ -251,7 +251,7 @@ export function createModule<T extends Constructor>(
         > = filter(isAction, (p, k) => ({
           get() {
             return (value: any, args: vuex.DispatchOptions) => {
-              return dispatch(k, value, { ...args, root: true });
+              return dispatch(k, value, { ...args });
             };
           }
         }));

@@ -207,6 +207,27 @@ describe("Builder", () => {
     ).resolves.toEqual("hello WORLD");
   });
 
+  it("Subsequent module actions in nested modules", async () => {
+    const a = createModule(
+      class {
+        async test1() {
+          return await this.test2();
+        }
+
+        async test2() {
+          return 456;
+        }
+      },
+      "a"
+    );
+
+    const rootModule = createModule(class {}, "", { modules: [a] });
+
+    const store = new Vuex.Store(rootModule);
+
+    await expect(store.dispatch("a/test1")).resolves.toEqual(456);
+  });
+
   it("Injected helpers", async () => {
     class Helpers {
       get $hurz(this: any): { test: Function } {

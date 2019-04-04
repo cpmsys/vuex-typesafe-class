@@ -199,7 +199,7 @@ export default createModule(RootModule, "", { modules: [salutationModule] });
 
 As you see you can use the options.modules parameter to attach further stores to your root store.
 To access external modules in your modules define a getter that executes `useStore(module, this)`.
-`module` is the result of `createModule`. If you omit the second, context parameter the library tries to use the global Vuex store.
+`module` is the result of `createModule`.
 **Note: Please define this getter as private and prefix it with `_` or `$` to prevent creating Vuex getter.**
 
 # What about using the store directly e.g. for usage in [Nuxt.js](https://nuxtjs.org) fetch method?
