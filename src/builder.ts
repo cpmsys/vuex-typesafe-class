@@ -173,7 +173,8 @@ export function createModule<T extends Constructor>(
         {} as any
       );
 
-      const context = { ...state };
+      const context = {};
+      Object.defineProperties(context, Object.getOwnPropertyDescriptors(state));
       Object.defineProperties(context, otherGetters);
       Object.defineProperties(context, _helpers);
 
