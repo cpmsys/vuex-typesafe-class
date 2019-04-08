@@ -1,5 +1,7 @@
 #include:
 #  - template: Auto-DevOps.gitlab-ci.yml
+stages:
+  - production
 
 production:
   stage: production
