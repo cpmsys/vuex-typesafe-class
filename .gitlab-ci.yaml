@@ -1,0 +1,6 @@
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+production:
+  stage: production
+  script: []

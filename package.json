@@ -1,5 +1,5 @@
 {
-  "name": "vuex-extra",
+  "name": "vuex-typesafe-class",
   "version": "1.0.0",
   "description": "Typescript helpers for using classes as vuex modules",
   "main": "dist/index.js",
@@ -8,20 +8,22 @@
     "test:unit": "jest",
     "build": "tsc -p ./tsconfig.build.json"
   },
-  "homepage": "https://github.com/ktsn/vuex-class",
-  "bugs": "https://github.com/ktsn/vuex-class/issues",
+  "homepage": "https://git.cpmsys.de/npm/vuex-typesafe-class",
+  "bugs": "https://git.cpmsys.de/npm/vuex-typesafe-class/issues",
   "repository": {
     "type": "git",
-    "url": "https://git.cpmsys.de/npm/vuex-extra.git"
+    "url": "https://git.cpmsys.de/npm/vuex-typesafe-class.git"
   },
   "keywords": [
     "vue",
     "vuex",
     "typescript",
+    "es2015",
     "nuxt",
-    "class"
+    "class",
+    "typesafe"
   ],
-  "author": "Markus Werner",
+  "author": "Markus Werner <markus@cpmsys.de> (https://cpmsys.de)",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^24.0.11",

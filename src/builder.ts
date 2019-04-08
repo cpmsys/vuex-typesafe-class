@@ -115,8 +115,10 @@ export function createModule<T extends Constructor>(
     k !== "constructor" && isFunction(p) && !isGenerator(p);
 
   function getAllPropertyDescriptors(instance: any): PropertyDescriptorMap {
+    if (!instance) return {};
     if (instance == Object.prototype) return {};
     const proto = Object.getPrototypeOf(instance);
+    if (!proto) return {};
     const descriptors = Object.getOwnPropertyDescriptors(proto);
     return { ...getAllPropertyDescriptors(proto), ...descriptors };
   }

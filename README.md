@@ -1,6 +1,6 @@
-# vuex-extra
+# vuex-typesafe-class
 
-Typescript helpers for using classes as Vuex modules
+ES2015 Helpers for using classes as Vuex modules
 
 ## Goals
 
@@ -14,7 +14,7 @@ This module has no external dependencies.
 
 ## Installation
 
-`$ npm install --save vuex-extra`
+`$ npm install --save vuex-typesafe-class`
 
 ## How to use
 
@@ -51,7 +51,7 @@ new Vuex.Store({
 You can now easily write modules using the `createModule` helper:
 
 ```typescript
-import { createModule } from "vuex-extra";
+import { createModule } from "vuex-typesafe-class";
 
 class RootModule {
   lineEnding = "\n";
@@ -82,7 +82,7 @@ Consider a simple store like this:
 
 ```typescript
 //store/simple.ts
-import { createModule, Mutation } from "vuex-extra";
+import { createModule, Mutation } from "vuex-typesafe-class";
 
 class RootModule {
   lineEnding = "\n";
@@ -117,7 +117,7 @@ You can now use these state variables, getters, mutations and actions in your co
 ```typescript
 import Vue from "vue";
 import Simple from "./store/simple";
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex-extra";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex-typesafe-class";
 
 export default Vue.extend({
   data() {
