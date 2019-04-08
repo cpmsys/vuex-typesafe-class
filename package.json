@@ -3,11 +3,15 @@
   "version": "1.0.0",
   "description": "Typescript helpers for using classes as vuex modules",
   "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "test": "npm run test:unit",
     "test:unit": "jest",
     "build": "tsc -p ./tsconfig.build.json"
   },
+  "files": [
+    "dist"
+  ],
   "homepage": "https://git.cpmsys.de/npm/vuex-typesafe-class",
   "bugs": "https://git.cpmsys.de/npm/vuex-typesafe-class/issues",
   "repository": {

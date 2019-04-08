@@ -1,7 +1,20 @@
-include:
-  - template: Auto-DevOps.gitlab-ci.yml
+#include:
+#  - template: Auto-DevOps.gitlab-ci.yml
 
 production:
   stage: production
   script: 
     - echo "Disabled"
+
+publish:  
+  image: node:alpine
+  stage: production
+  ##only:
+  # - tags
+  #  - triggers
+  script:
+    - npm install
+    - npm run build
+    - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
+    - npm version from-git
+    - npm publish --dry-run --tag v1.0.0 #${CI_COMMIT_TAG}
