@@ -3,4 +3,5 @@ include:
 
 production:
   stage: production
-  script: []
+  script: 
+    - echo "Disabled"
