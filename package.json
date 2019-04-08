@@ -12,11 +12,11 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://git.cpmsys.de/npm/vuex-typesafe-class",
-  "bugs": "https://git.cpmsys.de/npm/vuex-typesafe-class/issues",
+  "homepage": "https://github.com/cpmsys/vuex-typesafe-class",
+  "bugs": "https://github.com/cpmsys/vuex-typesafe-class/issues",
   "repository": {
     "type": "git",
-    "url": "https://git.cpmsys.de/npm/vuex-typesafe-class.git"
+    "url": "https://github.com/cpmsys/vuex-typesafe-class.git"
   },
   "keywords": [
     "vue",
