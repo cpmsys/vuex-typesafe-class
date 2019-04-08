@@ -1,7 +1,8 @@
-#include:
-#  - template: Auto-DevOps.gitlab-ci.yml
-stages:
-  - production
+include:
+  - template: Auto-DevOps.gitlab-ci.yml
+
+variables:
+  REVIEW_DISABLED: 'true'
 
 production:
   stage: production
@@ -11,12 +12,12 @@ production:
 publish:  
   image: node:alpine
   stage: production
-  ##only:
-  # - tags
-  #  - triggers
+  only:
+   - tags
+   - triggers
   script:
     - npm install
     - npm run build
     - echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}'>.npmrc
-    - npm version v1.0.1
-    - npm publish --dry-run #${CI_COMMIT_TAG}
+    - npm version ${CI_COMMIT_TAG}
+    - npm publish
