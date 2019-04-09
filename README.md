@@ -1,4 +1,21 @@
-# vuex-typesafe-class
+<p align="center">
+    <img src="./logo.svg"
+        height="130">
+</p>
+<p align="center">
+    <a href="https://git.cpmsys.de/npm/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
+        <img alt="Project badge" aria-hidden="true" src="https://git.cpmsys.de/npm/vuex-typesafe-class/badges/master/pipeline.svg">
+    </a>
+    <a class="append-right-8" href="https://www.npmjs.com/package/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
+        <img alt="Project badge" aria-hidden="true" src="https://img.shields.io/david/cpmsys/vuex-typesafe-class.svg">
+    </a>
+    <a class="append-right-8" href="https://www.npmjs.com/package/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
+        <img alt="Project badge" aria-hidden="true" src="https://img.shields.io/bundlephobia/min/vuex-typesafe-class.svg">
+    </a>
+    <a class="append-right-8" href="https://www.npmjs.com/package/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
+        <img alt="Project badge" aria-hidden="true" src="https://img.shields.io/npm/v/vuex-typesafe-class/latest.svg">
+    </a>
+</p>
 
 ES2015 Helpers for using classes as Vuex modules
 
