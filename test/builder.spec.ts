@@ -32,6 +32,17 @@ describe("Builder", () => {
     expect(store.state.test).toEqual(123);
   });
 
+  it("State (with undefined variables)", () => {
+    const m = createModule(
+      class Root {
+        test = undefined;
+      }
+    );
+    const store = new Vuex.Store(m);
+
+    expect(store.state).toHaveProperty("test");
+  });
+
   it("Getter", () => {
     const m = createModule(
       class Root {
@@ -65,6 +76,60 @@ describe("Builder", () => {
     expect(store.getters.testGetter).toEqual("test getter 123");
     store.commit("testSetter", 456);
     expect(store.getters.testGetter).toEqual("test getter 456");
+  });
+
+  it("Getter to be called", () => {
+    let called = 0;
+    const m = createModule(
+      class Root {
+        test = 123;
+
+        get testGetter() {
+          called++;
+          return "test getter " + this.test;
+        }
+
+        set testSetter(value: number) {
+          this.test = value;
+        }
+      }
+    );
+    const store = new Vuex.Store(m);
+    const a = store.getters.testGetter;
+    const a2 = store.getters.testGetter;
+    expect(called).toEqual(1);
+    store.commit("testSetter", 456);
+    const b = store.getters.testGetter;
+    const b2 = store.getters.testGetter;
+    expect(called).toEqual(2);
+  });
+
+  it("Getter to be called when state variable is undefined", () => {
+    let called = 0;
+    const m = createModule(
+      class Root {
+        test: number | undefined = undefined;
+
+        get testGetter() {
+          called++;
+          return "test getter " + this.test;
+        }
+
+        set testSetter(value: number) {
+          this.test = value;
+        }
+      }
+    );
+
+    const store = new Vuex.Store(m);
+
+    const a = store.getters.testGetter;
+    const a2 = store.getters.testGetter;
+    expect(called).toEqual(1);
+    store.commit("testSetter", 456);
+    const b = store.getters.testGetter;
+    const b2 = store.getters.testGetter;
+    expect(called).toEqual(2);
   });
 
   it("Mutation (Generator, ES6+)", () => {

@@ -32,6 +32,41 @@ function _each<T extends Record<any, any>, K extends Extract<keyof T, string>>(
   );
 }
 
+/**
+ * deepCopy of vuex
+ * https://github.com/vuejs/vuex/blob/master/src/util.js
+ *
+ * @param {*} obj
+ * @param {Array<Object>} cache
+ * @return {*}
+ */
+export function deepCopy(obj: any, cache: any[] = []) {
+  // just return if obj is immutable value
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+
+  // if obj is hit, it is in circular structure
+  const hit: any = cache.filter((c: any) => c.original === obj).shift();
+  if (hit) {
+    return hit.copy;
+  }
+
+  const copy: any = Array.isArray(obj) ? [] : {};
+  // put the copy into cache at first
+  // because we want to refer it in recursive deepCopy
+  cache.push({
+    original: obj,
+    copy
+  });
+
+  Object.keys(obj).forEach(key => {
+    copy[key] = deepCopy(obj[key], cache);
+  });
+
+  return copy;
+}
+
 const NAMESPACE_SEPARATOR = "/";
 
 /**
@@ -177,6 +212,7 @@ export function createModule<T extends Constructor>(
       );
 
       const context = {};
+
       Object.defineProperties(context, Object.getOwnPropertyDescriptors(state));
       Object.defineProperties(context, otherGetters);
       Object.defineProperties(context, _helpers);
@@ -194,6 +230,7 @@ export function createModule<T extends Constructor>(
       }
     }
   );
+
   //Actions:
   const actions: ActionMap<InstanceType<T>> = filter(
     isAction,
@@ -305,7 +342,7 @@ export function createModule<T extends Constructor>(
       _created = createInstance(out);
       return _created(context);
     },
-    state: () => JSON.parse(JSON.stringify(instance)),
+    state: () => deepCopy(instance),
     getters,
     mutations,
     actions,

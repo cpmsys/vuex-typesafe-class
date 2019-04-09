@@ -75,6 +75,64 @@ describe("Helpers", () => {
       expect($store.testGetter).toEqual("test getter 456");
     });
 
+    it("Getter to be called", () => {
+      let called = 0;
+      const m = createModule(
+        class Root {
+          test = 123;
+
+          get testGetter() {
+            called++;
+            return "test getter " + this.test;
+          }
+
+          set testSetter(value: number) {
+            this.test = value;
+          }
+        }
+      );
+      const store = new Vuex.Store(m);
+      const $store = useStore(m, store);
+      const a = $store.testGetter;
+      const a2 = $store.testGetter;
+      expect(called).toEqual(1);
+      $store.testSetter = 456;
+      const b = $store.testGetter;
+      const b2 = $store.testGetter;
+      expect(called).toEqual(2);
+    });
+
+    it("Getter in action to be called", async () => {
+      let called = 0;
+      const m = createModule(
+        class Root {
+          test = 123;
+
+          get testGetter() {
+            called++;
+            return "test getter " + this.test;
+          }
+
+          set testSetter(value: number) {
+            this.test = value;
+          }
+
+          async add(value: number) {
+            this.testSetter = value;
+          }
+        }
+      );
+      const store = new Vuex.Store(m);
+      const $store = useStore(m, store);
+      const a = $store.testGetter;
+      const a2 = $store.testGetter;
+      expect(called).toEqual(1);
+      await $store.add(456);
+      const b = $store.testGetter;
+      const b2 = $store.testGetter;
+      expect(called).toEqual(2);
+    });
+
     it("Mutation (Generator, ES6+)", () => {
       class Root {
         test: number = 123;
