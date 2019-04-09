@@ -1,6 +1,7 @@
 <p align="center">
-    <img src="./logo.svg"
-        height="130">
+    <a href="https://github.com/cpmsys/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
+        <img src="https://git.cpmsys.de/npm/vuex-typesafe-class/raw/master/logo.svg" height="130">
+    </a>
 </p>
 <p align="center">
     <a href="https://git.cpmsys.de/npm/vuex-typesafe-class" rel="noopener noreferrer" target="_blank">
