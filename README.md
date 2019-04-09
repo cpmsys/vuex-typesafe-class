@@ -32,7 +32,7 @@ This module has no external dependencies.
 
 ## Installation
 
-`$ npm install --save vuex-typesafe-class`
+`$ npm i vuex-typesafe-class`
 
 ## Getting started
 
@@ -105,6 +105,7 @@ class RootModule {
   stateA: boolean = true;
   stateB: number = 123;
   stateC: string = "abc";
+  stateD: string | undefined = undefined;
 }
 
 export default createModule(RootModule);
@@ -119,14 +120,20 @@ export default {
     return {
       stateA: true,
       stateB: 123,
-      stateC: "abc"
+      stateC: "abc",
+      stateD: undefined
     };
   }
 };
 ```
 
 All properties that are declared public will be available for autocompletion when using mapState().
-Please note that vuex-typesafe-class always produces state factories to allow [Module Reuse](https://vuex.vuejs.org/guide/modules.html#module-reuse).
+
+**Note**:
+
+- vuex-typesafe-class always produces state factories to allow [Module Reuse](https://vuex.vuejs.org/guide/modules.html#module-reuse).
+- While you can use undefined as value, you have to explicitly initialize state variables with undefined (see `stateD`).
+  Otherwise [reactivity](https://vuejs.org/v2/guide/reactivity.html) will not work as expected and getters might not be called.
 
 ### Mutations
 
@@ -228,7 +235,10 @@ export default {
 You can access state variables, getters, mutations and other actions from your class modules by simply referencing them with `this`.
 Because actions are asynchronous you should always define your actions as [async function](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Statements/async_function).
 
-Please note that [GeneratorFunctions](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction) can not be used.
+**Note**:
+
+- Do not use [GeneratorFunctions](https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction) as they would be detected as mutation functions (to allow mutators to be called as functions).
+  This might be removed in the future.
 
 ### Getters
 
@@ -350,8 +360,9 @@ The first parameter is the namespace (which accepts modules created by `createMo
 The map is type checked and the result also contains all type informations you provided in the store.
 
 **Note:**
-In the example we used the decorator function `@Mutation`. This is only necessary if you plan to use mutations inside your modules (with the help of `mapMutations`),
-which I understand as an anti-pattern. You can always use mutations you defined as setters inside actions and expose these to your components.
+
+- In the example we used the decorator function `@Mutation`. This is only necessary if you plan to use mutations inside your modules (with the help of `mapMutations`),
+  which I understand as an anti-pattern. You can always use mutations you defined as setters inside actions and expose these to your components.
 
 ### ... it with Nuxt.js?
 
@@ -399,7 +410,7 @@ class NestedStore {
 export default createModule(NestedStore, "nested");
 ```
 
-Note: You can omit the module name (second parameter of createModule) for your root module. For all other modules use the module namespace (delimited by **/**).
+**Note**: You can omit the module name (second parameter of createModule) for your root module. For all other modules use the module namespace (delimited by **/**).
 It is also possible to simply use `__filename` or `module.id` **in development** as vuex-typesafe-class can handle pathnames. **Module filenames will be lost after building with nuxt build/generate**.
 
 ### ...it with nested modules / submodules?
@@ -444,7 +455,9 @@ export default createModule(RootModule, "", { modules: [salutationModule] });
 As you see you can use the options.modules parameter to attach further stores to your root store.
 To access external modules in your modules define a getter that executes `useStore(module, this)`.
 `module` is the result of `createModule`.
-**Note: Please define this getter as private and prefix it with `_` or `$` to prevent creating Vuex getter.**
+**Note:**
+
+- Please define this getter as private and prefix it with `_` or `$` to prevent creating Vuex getter.\*\*
 
 ### ...it programmatically e.g. for usage in [Nuxt.js](https://nuxtjs.org) fetch method?
 
@@ -455,7 +468,7 @@ const $nested = useStore(salutationModule, this);
 assert($nested.salutation, "Mrs.");
 ```
 
-### ...Inheritance
+### ... Inheritance
 
 Modules created with `createModule` can make use of inheritance:
 
