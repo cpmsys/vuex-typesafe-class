@@ -54,6 +54,27 @@ describe("Helpers", () => {
       expect(useStore(m, store).testGetter).toEqual("test getter 123");
     });
 
+    it("Getter (revisit)", () => {
+      const m = createModule(
+        class Root {
+          test = 123;
+
+          get testGetter() {
+            return "test getter " + this.test;
+          }
+
+          set testSetter(value: number) {
+            this.test = value;
+          }
+        }
+      );
+      const store = new Vuex.Store(m);
+      const $store = useStore(m, store);
+      expect($store.testGetter).toEqual("test getter 123");
+      $store.testSetter = 456;
+      expect($store.testGetter).toEqual("test getter 456");
+    });
+
     it("Mutation (Generator, ES6+)", () => {
       class Root {
         test: number = 123;

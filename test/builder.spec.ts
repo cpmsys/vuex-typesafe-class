@@ -47,6 +47,26 @@ describe("Builder", () => {
     expect(store.getters.testGetter).toEqual("test getter 123");
   });
 
+  it("Getter (revisit)", () => {
+    const m = createModule(
+      class Root {
+        test = 123;
+
+        get testGetter() {
+          return "test getter " + this.test;
+        }
+
+        set testSetter(value: number) {
+          this.test = value;
+        }
+      }
+    );
+    const store = new Vuex.Store(m);
+    expect(store.getters.testGetter).toEqual("test getter 123");
+    store.commit("testSetter", 456);
+    expect(store.getters.testGetter).toEqual("test getter 456");
+  });
+
   it("Mutation (Generator, ES6+)", () => {
     class Root {
       test: number = 123;
@@ -135,6 +155,31 @@ describe("Builder", () => {
     await expect(store.dispatch("testAction", { test: 123 })).resolves.toEqual(
       "test action 456:123"
     );
+  });
+
+  it("Action with commit and getter", async () => {
+    const m = createModule(
+      class Root {
+        test = 123;
+
+        set testSetter(v: number) {
+          this.test = v;
+        }
+
+        get testGetter() {
+          return "Test " + this.test;
+        }
+
+        async testAction({ test }: { test: number }) {
+          this.testSetter = 456;
+        }
+      }
+    );
+    const store = new Vuex.Store(m);
+
+    await store.dispatch("testAction", { test: 123 });
+
+    await expect(store.getters.testGetter).toEqual("Test 456");
   });
 
   it("Nested module getters", async () => {

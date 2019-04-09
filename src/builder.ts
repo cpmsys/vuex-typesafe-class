@@ -119,6 +119,7 @@ export function createModule<T extends Constructor>(
     if (instance == Object.prototype) return {};
     const proto = Object.getPrototypeOf(instance);
     if (!proto) return {};
+    if (proto == Object.prototype) return {};
     const descriptors = Object.getOwnPropertyDescriptors(proto);
     return { ...getAllPropertyDescriptors(proto), ...descriptors };
   }

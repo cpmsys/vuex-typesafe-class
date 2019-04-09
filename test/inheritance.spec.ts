@@ -164,4 +164,65 @@ describe("Builder", () => {
       "parent test action 456:123"
     );
   });
+
+  it("Nested", () => {
+    class Base {
+      a = 123;
+
+      set aSetter(v: number) {
+        this.a = v;
+      }
+
+      get aGetter() {
+        return "Getter " + this.a;
+      }
+
+      async aAction({ test }: { test: number }) {
+        this.aSetter = 456;
+      }
+    }
+
+    class AceOfBase extends Base {
+      b = 123;
+
+      set bSetter(v: number) {
+        this.b = v;
+      }
+
+      get bGetter() {
+        return "Getter " + this.b;
+      }
+
+      async bAction({ test }: { test: number }) {
+        this.bSetter = 456;
+      }
+    }
+
+    const m = createModule(
+      class Root extends AceOfBase {
+        c = 123;
+
+        set cSetter(v: number) {
+          this.c = v;
+        }
+
+        get cGetter() {
+          return "Getter " + this.c;
+        }
+
+        async cAction({ test }: { test: number }) {
+          this.cSetter = 456;
+        }
+      }
+    );
+    const store = new Vuex.Store(m);
+
+    expect(Object.keys(m.state())).toEqual(["a", "b", "c"]);
+
+    expect(Object.keys(m.mutations)).toEqual(["aSetter", "bSetter", "cSetter"]);
+
+    expect(Object.keys(m.getters)).toEqual(["aGetter", "bGetter", "cGetter"]);
+
+    expect(Object.keys(m.actions)).toEqual(["aAction", "bAction", "cAction"]);
+  });
 });
